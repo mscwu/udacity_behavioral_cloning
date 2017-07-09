@@ -82,29 +82,31 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes | Layer         		|     Description	        					| 
+The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes:  
+
+| Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | Input         		| 160x320x3 RGB image   							| 
 | Normalization     |                                     |
-| Convolution 5x5     	| 2x2 stride, valid padding, outputs 28x28x16 	|
+| Cropping          | 85x320x3 RGB image                  |
+| Convolution 5x5     	| 2x2 stride, valid padding, outputs 41x158x24 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride, valid padding, outputs 14x14x32 				|
-| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x32      									|
-| RELU					|		
-| Max pooling	      	| 2x2 stride, valid padding, outputs 5x5x32 				|
-| Flatten	      	| outputs 800 				|
-| Fully connected		| outputs 256       									|
+| Convolution 5x5	    | 2x2 stride, valid padding, outputs 19x77x36      									|
 | RELU					|
-| Dropout		| Keep Probability 0.4      									|
-| Fully connected		| outputs 64       									|
+| Convolution 5x5	    | 2x2 stride, valid padding, outputs 8x37x48      									|
+| RELU					|
+| Convolution 3x3	    | 1x1 stride, valid padding, outputs 6x35x64      									|
 | RELU					|	
-| Dropout		| Keep Probability 0.4      									|
-| Fully connected		| outputs 43       									|
-| Softmax				|         									|
+| Convolution 3x3	    | 1x1 stride, valid padding, outputs 4x33x64      									|
+| RELU					|	
+| Flatten	      	| outputs 8448 				|
+| Fully connected		| outputs 100      									|
+| RELU					|
+| Fully connected		| outputs 50       									|
+| RELU					|	
+| Fully connected		| outputs 10       									|
+| Fully connected		| outputs 1        									|
 
-Here is a visualization of the architecture.  
-
-![alt text][image1]
 
 #### 3. Creation of the Training Set & Training Process
 
