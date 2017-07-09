@@ -132,3 +132,12 @@ I used this training data for training the model. The validation set helped dete
 ![alt text][image5]
 
 I used an adam optimizer so that manually training the learning rate wasn't necessary.
+
+### Possible Improvements in the Future
+There are some potential improvements for this model.
+#### 1. Add random distortion and brightness/contrast adjustments to the image.   
+This will help the car on track with worse and more dynamic lighting conditions.
+#### 2. Add recovering maneuver for completeness.  
+In reality we need to tell the car how to come back to track once it is way off the track, for example, with at least two wheels off the track. This is a very time consuming and tricky process which is not included now.
+#### 3. Add throttle and brake control.  
+Now the car drives along the track at full speed. This will not help with narrow and curvy roads, like ones in New York and Shanghai.
