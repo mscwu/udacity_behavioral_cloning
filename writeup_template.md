@@ -47,9 +47,9 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
-
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+In my project, I used the model propose by NVIDIA. More details can be found [here]. (https://arxiv.org/abs/1604.07316)  
+Here is a graphic representation of the model architecture.  
+[image1]: ./write_up_img/cnn-architecture.png "Model Architecture"
 
 #### 2. Attempts to reduce overfitting in the model
 
