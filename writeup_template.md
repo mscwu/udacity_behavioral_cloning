@@ -16,12 +16,9 @@ The goals / steps of this project are the following:
 
 [image1]: ./write_up_img/cnn-architecture.png "Model Architecture"
 [image2]: ./write_up_img/center.jpg "Centerline Driving"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
-
+[image3]: ./write_up_img/iml.jpg "Left Camera"
+[image4]: ./write_up_img/imr.jpg "Right Camera"
+[image5]: ./write_up_img/figure_1.jpg "Loss"
 ---
 ### Files Submitted & Code Quality
 
@@ -68,15 +65,13 @@ For details about how I created the training data, see the next section.
 
 #### 1. Solution Design Approach
 
-My first step was to use a convolution neural network model similar to the NVIDIA model. I thought this model might be appropriate because it was a proven model used by NVIDIA and the implementation was very simple. The model size was also small which took about 1 min to train on a GTX 1060 6GB GPU.
+My first step was to use a convolution neural network model similar to the NVIDIA model. I thought this model might be appropriate because it was a proven model used by NVIDIA and the implementation was very simple. The model size was also small which took about 1 min (15 secs each EPOCH) to train on a GTX 1060 6GB GPU.
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. Specifically, 20% of the data was used as validation set.  
 
-To combat the overfitting, I modified the model so that ...
+The default model trained very well and no significant overfitting is present.  
 
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track. I believe the reason was that during one lap recording, most of the time the steering wheel stayed close to zero. This biased the model towards a zero steering wheel angle because this tended to minimize the MSE. To improve the driving behavior in these cases, I collected more data at corner entry and exit. This turned to be very effective.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
@@ -100,10 +95,9 @@ The final model architecture (model.py lines 18-24) consisted of a convolution n
 | Convolution 3x3	    | 1x1 stride, valid padding, outputs 4x33x64      									|
 | RELU					|	
 | Flatten	      	| outputs 8448 				|
+| Fully connected		| outputs 1164      									|
 | Fully connected		| outputs 100      									|
-| RELU					|
 | Fully connected		| outputs 50       									|
-| RELU					|	
 | Fully connected		| outputs 10       									|
 | Fully connected		| outputs 1        									|
 
@@ -114,24 +108,24 @@ To capture good driving behavior, I first recorded two laps on track one using c
 
 ![alt text][image2]
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+I then recorded one lap of vehicle driving in clockwise direction.
 
+I then collected driving data at curve entry and exit only to "teach" the car how to curve.
+
+I did not use recovery lap as this turned out to be a very uneffective process. It depened largely on when to start/end the recording and how the car was recovered. When done incorrectly, it had negative effect on normal driving. This led me to abandon the idea of recovery lap and focus more on multiple camera usage in order to keep the car on the center of the lane.
+
+To take advantage of the 3 cameras mounted on the car, I used a correction angle to compensate for the steer angle (code line 35 - 38). Basically, when the car went towards one side of the road, the center image would look like either left or right image taken from a car driving on the center. The final angle I used was 0.21 degrees.  
+
+![alt text][image2]
 ![alt text][image3]
 ![alt text][image4]
+
+To augment the data sat, I also flipped images and angles thinking that this would generalize the data (code line 41 - 52). More specifically, this techique was only applied to steer angles more than a certain threshold. Again, this method was used to balance the training dataset such that not all the data were concentrated around zero.  
+
+I finally randomly shuffled the data set and put 20% of the data into a validation set. 
+
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 4 as evidenced by the convergence of training and validataion loss.  
+
 ![alt text][image5]
 
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I used an adam optimizer so that manually training the learning rate wasn't necessary.
