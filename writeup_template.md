@@ -11,7 +11,8 @@ The goals / steps of this project are the following:
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
-Checkout the video [here](https://www.youtube.com/watch?v=W_g1ZRfgcbA).
+Checkout low res video [here](https://www.youtube.com/watch?v=W_g1ZRfgcbA).
+Checkout HD video [here](https://youtu.be/I6z0mX0rIZw).
 
 [//]: # (Image References)
 
