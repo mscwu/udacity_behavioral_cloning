@@ -9,6 +9,7 @@ from sklearn.utils import shuffle
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Cropping2D, Convolution2D
 
+
 data = pd.read_csv('./data/driving_log.csv')
 
 train_samples, validation_samples = train_test_split(data, test_size=0.2)
@@ -86,4 +87,5 @@ plt.ylabel('mean squared error loss')
 plt.xlabel('epoch')
 plt.legend(['training set', 'validation set'], loc='upper right')
 plt.show()
+
 exit()
