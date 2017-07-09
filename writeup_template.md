@@ -14,8 +14,8 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
+[image1]: ./write_up_img/cnn-architecture.png "Model Architecture"
+[image2]: ./write_up_img/center.jpg "Centerline Driving"
 [image3]: ./examples/placeholder_small.png "Recovery Image"
 [image4]: ./examples/placeholder_small.png "Recovery Image"
 [image5]: ./examples/placeholder_small.png "Recovery Image"
@@ -47,23 +47,20 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-In my project, I used the model propose by NVIDIA. More details can be found [here]. (https://arxiv.org/abs/1604.07316)  
-Here is a graphic representation of the model architecture.  
-[image1]: ./write_up_img/cnn-architecture.png "Model Architecture"
+In my project, I used the model propose by NVIDIA. More details can be found [here](https://arxiv.org/abs/1604.07316)  
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
-
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 14). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 75).  
+Total EPOCH number is selected such that overfitting is eliminated.
 
 #### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving and multiple cameras correction.
 
 For details about how I created the training data, see the next section. 
 
@@ -71,9 +68,7 @@ For details about how I created the training data, see the next section.
 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+My first step was to use a convolution neural network model similar to the NVIDIA model. I thought this model might be appropriate because it was a proven model used by NVIDIA and the implementation was very simple. The model size was also small which took about 1 min to train on a GTX 1060 6GB GPU.
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
 
@@ -87,9 +82,27 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes | Layer         		|     Description	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Input         		| 160x320x3 RGB image   							| 
+| Normalization     |                                     |
+| Convolution 5x5     	| 2x2 stride, valid padding, outputs 28x28x16 	|
+| RELU					|												|
+| Max pooling	      	| 2x2 stride, valid padding, outputs 14x14x32 				|
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x32      									|
+| RELU					|		
+| Max pooling	      	| 2x2 stride, valid padding, outputs 5x5x32 				|
+| Flatten	      	| outputs 800 				|
+| Fully connected		| outputs 256       									|
+| RELU					|
+| Dropout		| Keep Probability 0.4      									|
+| Fully connected		| outputs 64       									|
+| RELU					|	
+| Dropout		| Keep Probability 0.4      									|
+| Fully connected		| outputs 43       									|
+| Softmax				|         									|
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
+Here is a visualization of the architecture.  
 
 ![alt text][image1]
 
