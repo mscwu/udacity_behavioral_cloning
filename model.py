@@ -3,6 +3,7 @@ import cv2
 import pandas as pd
 import numpy as np
 import sklearn
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from keras.models import Sequential
@@ -29,7 +30,7 @@ train_samples, validation_samples = train_test_split(data, test_size=0.2)
 images = []
 steer = []
 
-def generator(samples, batch_size = 32):
+def generator(samples, batch_size = 8):
 	num_samples = len(samples)
 	while 1:
 		shuffle(samples)
@@ -44,19 +45,29 @@ def generator(samples, batch_size = 32):
 				img_c = cv2.imread(name_c)
 				img_l = cv2.imread(name_l)
 				img_r = cv2.imread(name_r)
-				correction = 0.2 # this is a parameter to tune
+				correction = 0.21 # this is a parameter to tune
 				steer_c = batch_sample['Steer']
 				steer_l = steer_c + correction
 				steer_r = steer_c - correction
-				images.extend([img_c, img_l, img_r])
-				steer.extend([steer_c, steer_l, steer_r])
-
+				# flip the images and steer angle left and right to augment the data
+				if np.absolute(steer_c) > 0.75:
+					img_c_flipped = cv2.flip(img_c, 1)
+					steer_c_flipped = -steer_c
+					img_l_flipped = cv2.flip(img_l, 1)
+					steer_l_flipped = -steer_c + correction
+					img_r_flipped = cv2.flip(img_r, 1)
+					steer_r_flipped = -steer_c - correction			
+					images.extend([img_c, img_l, img_r, img_c_flipped, img_l_flipped, img_r_flipped])
+					steer.extend([steer_c, steer_l, steer_r, steer_c_flipped, steer_l_flipped, steer_r_flipped])
+				else:											
+					images.extend([img_c, img_l, img_r])
+					steer.extend([steer_c, steer_l, steer_r])
 			X_train = np.array(images)
 			y_train = np.array(steer)
 			yield shuffle(X_train, y_train)
 
-train_generator = generator(train_samples, batch_size=32)
-validation_generator = generator(validation_samples, batch_size=32)
+train_generator = generator(train_samples, batch_size=8)
+validation_generator = generator(validation_samples, batch_size=8)
 # for row in arange(data.shape[0]):
 # 	steering_center = float(data['Steer'][row])
 
@@ -84,6 +95,17 @@ model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
-model.fit_generator(train_generator, samples_per_epoch= len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=3)
+history_object = model.fit_generator(train_generator, samples_per_epoch= len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=4, verbose=1)
 model.save('model.h5')
+### print the keys contained in the history object
+print(history_object.history.keys())
+
+### plot the training and validation loss for each epoch
+plt.plot(history_object.history['loss'])
+plt.plot(history_object.history['val_loss'])
+plt.title('model mean squared error loss')
+plt.ylabel('mean squared error loss')
+plt.xlabel('epoch')
+plt.legend(['training set', 'validation set'], loc='upper right')
+plt.show()
 exit()
