@@ -8,25 +8,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Cropping2D, Convolution2D
-# lines = []
-# with open('../data/driving_log.csv') as csvfile:
-# 	reader = csv.reader(csvfile)
-# 	for line in reader:
-# 		lines.append(line)
 
-# images = []
-# measurements = []
-# for line in lines:
 data = pd.read_csv('./data/driving_log.csv')
-# print(data['IMR'][2])
+
 train_samples, validation_samples = train_test_split(data, test_size=0.2)
-# print (train_samples['IMC'].iloc[0:2])
-# print (train_samples['IML'].iloc[0:2])
-# print (train_samples['IMR'].iloc[0:2])
-# print (train_samples['Steer'].iloc[0:2])
-# print(len(train_samples['Steer'].iloc[0:2]))
-# print(train_samples.shape)
-# print (train_samples.iloc[0:2]['IMC'])
+
 images = []
 steer = []
 
@@ -50,6 +36,7 @@ def generator(samples, batch_size = 8):
 				steer_l = steer_c + correction
 				steer_r = steer_c - correction
 				# flip the images and steer angle left and right to augment the data
+				# flip images only for steer angles more than +/- 0.75 degrees
 				if np.absolute(steer_c) > 0.75:
 					img_c_flipped = cv2.flip(img_c, 1)
 					steer_c_flipped = -steer_c
@@ -68,17 +55,8 @@ def generator(samples, batch_size = 8):
 
 train_generator = generator(train_samples, batch_size=8)
 validation_generator = generator(validation_samples, batch_size=8)
-# for row in arange(data.shape[0]):
-# 	steering_center = float(data['Steer'][row])
 
-# 	# create adjusted steering measurements for the side camera images
-# 	correction = 0.2 # this is a parameter to tune
-#     steering_left = steering_center + correction
-#     steering_right = steering_center - correction
 
-#     img_center = 
-#     img_left = 
-#     img_right = 
 ch, row, col = 160, 320, 3  # Trimmed image format
 model = Sequential()
 model.add(Lambda(lambda x: x/255 - 0.5, input_shape=(ch, row, col)))
