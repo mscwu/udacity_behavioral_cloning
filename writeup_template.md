@@ -18,7 +18,8 @@ The goals / steps of this project are the following:
 [image2]: ./write_up_img/center.jpg "Centerline Driving"
 [image3]: ./write_up_img/iml.jpg "Left Camera"
 [image4]: ./write_up_img/imr.jpg "Right Camera"
-[image5]: ./write_up_img/figure_1.jpg "Loss"
+[image5]: ./write_up_img/figure_1.png "Loss"
+
 ---
 ### Files Submitted & Code Quality
 
